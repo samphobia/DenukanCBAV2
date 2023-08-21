@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('btjbiouqmlyksi6aah3r', 'ud9yhtehb58bc5mv', 'liHueEs19PpCKemi2Pog', {
+const sequelize = new Sequelize(process.env.MYSQL_ADDON_DB, process.env.MYSQL_ADDON_USER, process
+  .env.MYSQL_ADDON_PASSWORD, {
   dialect: 'mysql',
-  host: 'btjbiouqmlyksi6aah3r-mysql.services.clever-cloud.com'
+  host: process.env.MYSQL_HOST
 });
 
 module.exports = sequelize;
