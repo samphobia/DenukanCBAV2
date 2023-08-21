@@ -42,10 +42,10 @@ const options = {
       }
     ],
     servers: [
-      {
-        url: "https://cerise-life-jacket.cyclic.app/"
+      // {
+      //   url: "https://cerise-life-jacket.cyclic.app/"
               
-      },
+      // },
       {
         url: "http://localhost:4002/"
       }
