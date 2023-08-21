@@ -1,5 +1,5 @@
 const express = require('express')
-const dotenv = require("dotenv").config();
+const dotenv = require("dotenv");
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
 const connectDB = require("./config/database");
@@ -12,7 +12,7 @@ const cors = require('cors')
 const sequelize = require('./config/database')
 
 
-// dotenv.config({ path: "./config/config.env" })
+dotenv.config({ path: "./config/config.env" })
 
 // connectDB()
 

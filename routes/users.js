@@ -1,6 +1,6 @@
-const express = require('express')
+const express = require("express");
 
-const { createUser, loginUser} = require('../controllers/users')
+const { createUser, loginUser, getAllUsers } = require("../controllers/users");
 
 const router = express.Router({ mergeParams: true });
 
@@ -29,9 +29,9 @@ const router = express.Router({ mergeParams: true });
  *              password:
  *                type: string
  *              role:
- *                type: string 
+ *                type: string
  *    tags: [Authentication]
- *    responses: 
+ *    responses:
  *      200:
  *        description: created new user
  *        content:
@@ -40,7 +40,7 @@ const router = express.Router({ mergeParams: true });
  *              type: object
  *      400:
  *        description: There was an error creating the news user
- * 
+ *
  */
 router.post("/", createUser);
 
@@ -61,7 +61,7 @@ router.post("/", createUser);
  *              password:
  *                type: string
  *    tags: [Authentication]
- *    responses: 
+ *    responses:
  *      200:
  *        description: login user successfully
  *        content:
@@ -70,8 +70,28 @@ router.post("/", createUser);
  *              type: object
  *      400:
  *        description: There was an error logging the user
- * 
+ *
  */
 router.post("/login", loginUser);
+
+ /**
+  * @swagger
+  * /api/user:
+  *  get:
+  *    summary: gets User by id
+  *    description: gets all users 
+  *    tags: [Authentication]
+  *    responses: 
+  *      200:
+  *        description: User loaded successfully
+  *        content:
+  *          application/json:
+  *            schema:
+  *              type: object
+  *      400:
+  *        description: There was an error loading the User
+  * 
+  */
+router.get("/", getAllUsers);
 
 module.exports = router;
