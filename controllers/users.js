@@ -114,6 +114,64 @@ exports.getAllUsers = async (req, res, next) => {
   }
 };
 
+exports.getUserById = async (req, res, next) => {
+  try {
+    const userId = req.params.id; // Assuming the route is '/users/:id'
+
+    // Find the user by ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return next(new ErrorResponse(`User not found`, 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: user
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const userId = req.params.id; // Assuming the route is '/users/:id'
+    const { name, email, role } = req.body;
+
+    // Find the user by ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return next(new ErrorResponse(`User not found`, 404));
+    }
+
+    // Update user properties
+    user.name = name;
+    user.email = email;
+    user.role = role;
+
+    // Save the updated user
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      data: user
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+
 
 
 
