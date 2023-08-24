@@ -21,26 +21,18 @@ const merchant = require("./routes/merchant");
 
 const options = {
   definition: {
-    openapi:  "3.0.0",
+    openapi:  "3.1.0",
     info: {
       title: "Denukan CoreBanking API Collections",
       version: "1.0.0",
-      description: "DENUKAN SOFTWARE API v2.2"
+      description: "DENUKAN COREBANKING SOFTWARE API v2.2",
+      contact:{
+        "name": "Denukan Network Limited",
+        "url": "https://denukan.com",
+        "email": "info@denukan.com"
+      },
     },
-    components: {
-      securitySchemas: {
-        bearerAuth: {
-          type: 'http',
-          schema: 'bearer',
-          bearerFormat: "JWT"
-        }
-      }
-    },
-    security: [
-      {
-        bearerAuth: [],
-      }
-    ],
+   
     servers: [
       {
         url: "https://doubtful-tan-peplum.cyclic.cloud"
