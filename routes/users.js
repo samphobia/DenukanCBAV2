@@ -1,6 +1,13 @@
 const express = require("express");
 
-const { createUser, loginUser, getAllUsers, getUserById, updateUser, getMe, resetPassword } = require("../controllers/users");
+const {
+  createUser,
+  loginUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  getMe,
+  resetPassword } = require("../controllers/users");
 
 const router = express.Router({ mergeParams: true });
 

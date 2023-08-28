@@ -96,11 +96,7 @@ exports.getAllUsers = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: {
-        id: users.id,
-        name: users.name,
-        email: users.email
-      }
+      data: users
     });
 
   } catch (err) {
