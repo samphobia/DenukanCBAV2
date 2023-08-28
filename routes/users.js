@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { createUser, loginUser, getAllUsers, getUserById, updateUser } = require("../controllers/users");
+const { createUser, loginUser, getAllUsers, getUserById, updateUser, getMe, resetPassword } = require("../controllers/users");
 
 const router = express.Router({ mergeParams: true });
 
@@ -193,7 +193,58 @@ router.get("/:id", getUserById);
  *        description: There was an error creating the news user
  *
  */
-router.put("/:id", getUserById);
+router.put("/:id", updateUser);
+
+ /**
+  * @swagger
+  * /api/user/me:
+  *  get:
+  *    summary: gets logged in user
+  *    tags: [Authentication]
+  *    security:
+  *      - bearerAuth: []
+  *    responses: 
+  *      200:
+  *        description: User loaded successfully
+  *        content:
+  *          application/json:
+  *            schema:
+  *              type: object
+  *      400:
+  *        description: There was an error loading the User
+  * 
+  */
+router.get("/me", getMe)
+
+/**
+ * @swagger
+ * /api/user/reset-password:
+ *  post:
+ *    summary: Reset user's password
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *              new password:
+ *                type: string
+ *    tags: [Authentication]
+ *    responses:
+ *      200:
+ *        description: password has been reset
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description:  error with the process
+ *
+ */
+router.post("/reset-password", resetPassword)
 
 
 module.exports = router;
