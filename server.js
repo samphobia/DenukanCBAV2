@@ -32,10 +32,20 @@ const options = {
         "email": "info@denukan.com"
       },
     },
+    components: {
+      securitySchemes: {
+        BearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT"
+        }
+      },
+    },
    
     servers: [
       {
-        url: "https://doubtful-tan-peplum.cyclic.cloud"
+        url: "https://doubtful-tan-peplum.cyclic.cloud",
+        description: "Test server"
               
       },
       {

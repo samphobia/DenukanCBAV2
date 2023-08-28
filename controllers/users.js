@@ -78,15 +78,8 @@ exports.loginUser = async (req, res, next) => {
     if (!isPasswordValid) {
       return next(new ErrorResponse(`Invalid credentials`, 401));
     }
-    const token = jwt.sign({ id: user.id }, `${process.env.JWT_SECRET}`);
 
-    res.status(200).json({
-      status: 'success',
-      data: {
-        id: user.id,
-        token
-      }
-    });
+    setTokenCookieAndRespond(user, 202, res)
 
   } catch (err) {
     res.status(400).json({
@@ -103,7 +96,11 @@ exports.getAllUsers = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: users
+      data: {
+        id: users.id,
+        name: users.name,
+        email: users.email
+      }
     });
 
   } catch (err) {
@@ -127,7 +124,11 @@ exports.getUserById = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: user
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
     });
 
   } catch (err) {
@@ -170,6 +171,84 @@ exports.updateUser = async (req, res, next) => {
     });
   }
 };
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return next(new ErrorResponse(`Please provide email and new password`, 400));
+    }
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return next(new ErrorResponse(`User not found`, 404));
+    }
+
+    // Hash the new password before updating in the database
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Password reset successful'
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+exports.getMe = async (req, res, next) => {
+  try {
+    const userId = req.user.id; // Assuming the user's ID is available in the request (e.g., from middleware)
+
+    // Find the user by their ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return next(new ErrorResponse(`User not found`, 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user
+      }
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+
+const setTokenCookieAndRespond = (user, statusCode, res) => {
+  const token = jwt.sign({ id: user.id }, `${process.env.JWT_SECRET}`);
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000, // Set the cookie expiration time (e.g., 1 day)
+    secure: process.env.NODE_ENV === 'production' // Set 'secure' to true in production
+  });
+
+  res.status(statusCode).json({
+    success: true,
+    token: token,
+    data: {
+      user
+    }
+  });
+};
+
 
 
 
