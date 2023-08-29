@@ -34,7 +34,7 @@ exports.createUser = async (req, res, next) => {
     });
 
     // Generate a JWT token with user ID and secret key
-    const token = jwt.sign({ id: newUser.id }, `${process.env.JWT_SECRET}`);
+    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE});
 
     res.status(201).json({
       status: 'success',
@@ -79,7 +79,17 @@ exports.loginUser = async (req, res, next) => {
       return next(new ErrorResponse(`Invalid credentials`, 401));
     }
 
-    setTokenCookieAndRespond(user, 202, res)
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        user,
+        token
+      }
+    });
+
+    // setTokenCookieAndRespond(user, 202, res)
 
   } catch (err) {
     res.status(400).json({

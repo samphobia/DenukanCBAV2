@@ -6,7 +6,6 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
-  getMe,
   resetPassword } = require("../controllers/users");
 
 const router = express.Router({ mergeParams: true });
@@ -202,26 +201,7 @@ router.get("/:id", getUserById);
  */
 router.put("/:id", updateUser);
 
- /**
-  * @swagger
-  * /api/user/me:
-  *  get:
-  *    summary: gets logged in user
-  *    tags: [Authentication]
-  *    security:
-  *      - bearerAuth: []
-  *    responses: 
-  *      200:
-  *        description: User loaded successfully
-  *        content:
-  *          application/json:
-  *            schema:
-  *              type: object
-  *      400:
-  *        description: There was an error loading the User
-  * 
-  */
-router.get("/me", getMe)
+
 
 /**
  * @swagger
