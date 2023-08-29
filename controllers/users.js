@@ -109,10 +109,10 @@ exports.getAllUsers = async (req, res, next) => {
 
 exports.getUserById = async (req, res, next) => {
   try {
-    const userId = req.params.id; // Assuming the route is '/users/:id'
+    // const userId = req.params.id; // Assuming the route is '/users/:id'
 
     // Find the user by ID
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(req.params.id);
 
     if (!user) {
       return next(new ErrorResponse(`User not found`, 404));
@@ -203,10 +203,10 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.getMe = async (req, res, next) => {
   try {
-    const userId = req.user.id; // Assuming the user's ID is available in the request (e.g., from middleware)
-
+    // const userId = req.user.id; // Assuming the user's ID is available in the request (e.g., from middleware)
+   
     // Find the user by their ID
-    const user = await User.findByPk(userId);
+    const user = await User.findByPk(req.user.id);
 
     if (!user) {
       return next(new ErrorResponse(`User not found`, 404));
