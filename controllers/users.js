@@ -11,7 +11,7 @@ exports.createUser = async (req, res, next) => {
       return next(new ErrorResponse(`Please provide email and password`, 400))
     }
     
-    if (role !== 'Admin' && role !== 'Merchant') {
+    if (role !== 'Admin' && role !== 'User') {
       return next(new ErrorResponse(`Please choose a role for this User`, 400))
     }
 

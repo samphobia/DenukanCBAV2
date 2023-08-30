@@ -11,7 +11,8 @@ const User = sequelize.define('user', {
   },
   role: {
     type: Sequelize.ENUM('admin', 'user'),
-    allowNull: false
+    allowNull: false,
+    defaultValue: 'user'
   },
   name: {
     type: Sequelize.STRING,
@@ -36,12 +37,12 @@ const User = sequelize.define('user', {
 }
 );
 
-// User.sync({ force: true })
-//   .then(() => {
-//     console.log('User table synced successfully');
-//   })
-//   .catch((error) => {
-//     console.error('Error syncing User table:', error);
-//   });
+User.sync({ force: true })
+  .then(() => {
+    console.log('User table synced successfully');
+  })
+  .catch((error) => {
+    console.error('Error syncing User table:', error);
+  });
 
 module.exports = User;
