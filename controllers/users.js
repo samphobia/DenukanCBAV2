@@ -211,31 +211,6 @@ exports.resetPassword = async (req, res, next) => {
   }
 };
 
-exports.getMe = async (req, res, next) => {
-  try {
-    // const userId = req.user.id; // Assuming the user's ID is available in the request (e.g., from middleware)
-   
-    // Find the user by their ID
-    const user = await User.findByPk(req.user.id);
-
-    if (!user) {
-      return next(new ErrorResponse(`User not found`, 404));
-    }
-
-    res.status(200).json({
-      status: 'success',
-      data: {
-        user
-      }
-    });
-
-  } catch (err) {
-    res.status(400).json({
-      status: 'error',
-      message: err.message
-    });
-  }
-};
 
 const setTokenCookieAndRespond = (user, statusCode, res) => {
   const token = jwt.sign({ id: user.id }, `${process.env.JWT_SECRET}`);
