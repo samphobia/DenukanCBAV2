@@ -99,12 +99,12 @@ const Customer = sequelize.define('customer', {
 }
 );
 
-Customer.sync({ force: true })
-  .then(() => {
-    console.log('customer table synced successfully');
-  })
-  .catch((error) => {
-    console.error('Error syncing customer table:', error);
-  });
+// Customer.sync({ force: true })
+//   .then(() => {
+//     console.log('customer table synced successfully');
+//   })
+//   .catch((error) => {
+//     console.error('Error syncing customer table:', error);
+//   });
 
 module.exports = Customer;
