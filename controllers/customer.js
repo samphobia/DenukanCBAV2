@@ -1,6 +1,6 @@
 const Customer = require('../models/Customer');
 
-const createCustomer = async (req, res, next) => {
+exports.createCustomer = async (req, res, next) => {
   try {
     const {
       title,
@@ -91,5 +91,3 @@ const createCustomer = async (req, res, next) => {
     });
   }
 };
-
-exports.createCustomer = createCustomer;
