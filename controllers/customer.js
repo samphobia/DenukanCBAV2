@@ -91,3 +91,21 @@ exports.createCustomer = async (req, res, next) => {
     });
   }
 };
+
+exports.getAllCustomers = async (req, res, next) => {
+  try {
+    const customer = await Customer.findAll();
+
+    res.status(200).json({
+      status: 'success',
+      data: customer
+    });
+
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message
+    });
+  }
+};
+

@@ -1,5 +1,5 @@
 const express = require("express");
-const { createCustomer } = require('../controllers/customer')
+const { createCustomer, getAllCustomers } = require('../controllers/customer')
 
 const router = express.Router()
 
@@ -154,5 +154,25 @@ const router = express.Router()
  *
  */
 router.post("/createcustomer", createCustomer);
+
+ /**
+  * @swagger
+  * /api/customer/createcustomer:
+  *  get:
+  *    summary: gets all customers
+  *    description: gets all users 
+  *    tags: [Customer]
+  *    responses: 
+  *      200:
+  *        description: User loaded successfully
+  *        content:
+  *          application/json:
+  *            schema:
+  *              type: object
+  *      400:
+  *        description: There was an error loading the User
+  * 
+  */
+router.get("/createcustomer", getAllCustomers);
 
 module.exports = router;
