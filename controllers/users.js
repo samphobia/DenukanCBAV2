@@ -79,7 +79,7 @@ exports.loginUser = async (req, res, next) => {
       return next(new ErrorResponse(`Invalid credentials`, 401));
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    // const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
 
     // res.status(200).json({
     //   status: 'success',
@@ -227,7 +227,8 @@ const setTokenCookieAndRespond = (user, statusCode, res) => {
     data: {
       id: user.id,
       name: user.name,
-      email: user.email
+      email: user.email,
+      role: user.role
     }
   });
 };
