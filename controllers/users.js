@@ -53,8 +53,8 @@ exports.createUser = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to create user'
     });
   }
 };
@@ -93,8 +93,8 @@ exports.loginUser = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to login user'
     });
   }
 };
@@ -111,8 +111,8 @@ exports.getAllUsers = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to load all users'
     });
   }
 };
@@ -139,8 +139,8 @@ exports.getUserById = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to load user'
     });
   }
 };
@@ -172,8 +172,8 @@ exports.updateUser = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to update user'
     });
   }
 };
@@ -205,8 +205,8 @@ exports.resetPassword = async (req, res, next) => {
 
   } catch (err) {
     res.status(400).json({
-      status: 'error',
-      message: err.message
+      status: false,
+      message: 'failed to reset user password'
     });
   }
 };
