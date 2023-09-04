@@ -18,9 +18,13 @@ exports.getMe = async (req, res, next) => {
 
 
     res.status(200).json({
-      status: 'success',
-      data: {
-        user
+      status: true,
+      message: 'succes',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
       }
     });
 

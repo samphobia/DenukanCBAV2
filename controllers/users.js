@@ -106,7 +106,7 @@ exports.getAllUsers = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: users
+      user: users
     });
 
   } catch (err) {
@@ -130,7 +130,7 @@ exports.getUserById = async (req, res, next) => {
 
     res.status(200).json({
       status: 'success',
-      data: {
+      user: {
         id: user.id,
         name: user.name,
         email: user.email
@@ -223,8 +223,9 @@ const setTokenCookieAndRespond = (user, statusCode, res) => {
 
   res.status(statusCode).json({
     success: true,
+    message: 'succes',
     token: token,
-    data: {
+    user: {
       id: user.id,
       name: user.name,
       email: user.email,
