@@ -20,6 +20,7 @@ const users = require("./routes/users");
 const merchant = require("./routes/merchant");
 const auth = require("./routes/auth")
 const customer = require("./routes/customer")
+const corporate = require("./routes/corporate")
 
 const options = {
   definition: {
@@ -75,6 +76,7 @@ app.use('/api/user', users);
 app.use('/api/merchant', merchant);
 app.use('/api/auth', auth)
 app.use('/api/customer', customer)
+app.use('/api/corporate', corporate)
 
 // User.hasOne(Merchant)
 // Merchant.belongsTo(User, {constraints: true, onDelete: 'CASACADE'})
