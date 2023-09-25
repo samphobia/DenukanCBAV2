@@ -3,7 +3,6 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
 const connectDB = require("./config/database");
-const Merchant = require('./models/Merchant');
 // const Merchant = require('./models/Merchant');
 const Contact = require('./models/contact');
 const Phone = require('./models/phone');

@@ -56,7 +56,7 @@ const router = express.Router({ mergeParams: true });
 
 /** 
  * @swagger
- * /api/mercahnt:
+ * /api/merchant:
  *  post:
  *    summary: creates a Merchant
  *    requestBody:
