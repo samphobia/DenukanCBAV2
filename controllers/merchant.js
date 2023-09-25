@@ -6,58 +6,6 @@ const { sendOTP } = require("../middleware/mailer");
 const { generateOTP } = require("../middleware/otp");
 const OTP = require("../models/Otp");
 
-// exports.createUser = async (req, res, next) => {
-//   try {
-//     const { name, email, password, role } = req.body;
-
-//     if (!email || !password) {
-//       return next(new ErrorResponse(`Please provide email and password`, 400))
-//     }
-
-//     if (role !== 'Admin' && role !== 'Merchant') {
-//       return next(new ErrorResponse(`Please choose a role for this Merchant`, 400))
-//     }
-
-//     const existingUser = await Merchant.findOne({ where: { email } });
-//     if (existingUser) {
-//       return next(new ErrorResponse(`Merchant already exist`, 401))
-//     }
-
-//     // Hash the password before saving to the database
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     // Create a new user object with the hashed password
-//     const newUser = await Merchant.create({
-//       name,
-//       email,
-//       password: hashedPassword,
-//       role
-//     });
-
-//     // Generate a JWT token with user ID and secret key
-//     const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE});
-
-//     res.status(201).json({
-//       status: 'success',
-//       data: {
-//         user: newUser,
-//         token
-//       }
-//     });
-
-//     const sync = req.query.sync;
-//     if (sync === 'true') {
-//       await Merchant.sync();
-//       console.log('Tables synchronized');
-//     }
-
-//   } catch (err) {
-//     res.status(400).json({
-//       status: false,
-//       message: 'failed to create user'
-//     });
-//   }
-// };
 
 function generateMerchantId() {
   const min = 1000000000; // 10 digits

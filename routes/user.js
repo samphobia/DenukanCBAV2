@@ -5,6 +5,6 @@ const { protectRoute, authorizeRole } = require("../middleware/auth");
 
 const router = express.Router({ mergeParams: true });
 
-router.post("/", createMerchant);
+// router.post("/", createMerchant);
 
 module.exports = router;
