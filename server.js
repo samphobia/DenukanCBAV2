@@ -3,8 +3,8 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
 const connectDB = require("./config/database");
-const User = require('./models/user');
-const Merchant = require('./models/merchant');
+const Merchant = require('./models/Merchant');
+// const Merchant = require('./models/Merchant');
 const Contact = require('./models/contact');
 const Phone = require('./models/phone');
 const cors = require('cors')
@@ -16,8 +16,8 @@ const sequelize = require('./config/database')
 
 // connectDB()
 
-const users = require("./routes/users");
 const merchant = require("./routes/merchant");
+// const merchant = require("./routes/merchant");
 const auth = require("./routes/auth")
 const customer = require("./routes/customer")
 const corporate = require("./routes/corporate")
@@ -72,8 +72,8 @@ app.use(express.json());
 
 
 
-app.use('/api/user', users);
 app.use('/api/merchant', merchant);
+// app.use('/api/merchant', merchant);
 app.use('/api/auth', auth)
 app.use('/api/customer', customer)
 app.use('/api/corporate', corporate)

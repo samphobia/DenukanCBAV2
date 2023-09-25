@@ -93,12 +93,12 @@ const Corporate = sequelize.define(
   }
 );
 
-// User.sync({ force: true })
+// Corporate.sync({ force: true })
 //   .then(() => {
 //     console.log('User table synced successfully');
 //   })
 //   .catch((error) => {
-//     console.error('Error syncing User table:', error);
+//     console.error('Error syncing Corporate table:', error);
 //   });
 
 module.exports = Corporate;

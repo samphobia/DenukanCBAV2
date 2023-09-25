@@ -30,9 +30,7 @@ exports.createCorporate = async (req, res) => {
 
     // Check if a corporate with the same email or BVN already exists
     const existingCorporate = await Corporate.findOne({
-      where: {
-        [Sequelize.Op.or]: [{ email }, { BVN }],
-      },
+      where:  [{ email }, { BVN }]
     });
 
     if (existingCorporate) {

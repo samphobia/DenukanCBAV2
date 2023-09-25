@@ -23,6 +23,6 @@ const router = express.Router()
   *        description: There was an error loading the User
   * 
   */
-router.get("/me", protectRoute, getMe)
+// router.get("/me", protectRoute, getMe)
 
 module.exports = router;

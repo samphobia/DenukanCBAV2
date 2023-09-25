@@ -105,7 +105,7 @@ router.post("/createcorporate", createCorporate);
 
  /**
   * @swagger
-  * /api/customer/createcorporate:
+  * /api/corporate/createcorporate:
   *  get:
   *    summary: gets all corporate customers
   *    description: gets all corporate customers 

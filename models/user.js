@@ -1,4 +1,5 @@
-const Sequelize = require('sequelize');
+const { Sequelize } = require('sequelize');
+const Merchant = require("../models/Merchant");
 
 const sequelize = require('../config/database');
 
@@ -9,33 +10,36 @@ const User = sequelize.define('user', {
     allowNull: false,
     primaryKey: true
   },
-  role: {
-    type: Sequelize.ENUM('admin', 'user'),
-    allowNull: false,
-    defaultValue: 'user'
-  },
-  name: {
+  firstName: {
     type: Sequelize.STRING,
-    unique: true,
     allowNull: false
-
+  },
+  lastName: {
+    type: Sequelize.STRING,
+    allowNull: false
   },
   email: {
     type: Sequelize.STRING,
     unique: true,
     allowNull: false,
-    isEmail: true
-
   },
   password: {
     type: Sequelize.STRING,
     allowNull: false
-  }
+  },
 },
-{
-  timestamps: true
-}
+  
+  {
+    timestamps: true
+  }
+ 
 );
+
+Merchant.hasMany(User, {
+  foreignKey: 'merchantId', // This is the foreign key in the Account model
+  onDelete: 'CASCADE',
+});
+User.belongsTo(Merchant);
 
 // User.sync({ force: true })
 //   .then(() => {
