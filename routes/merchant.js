@@ -2,7 +2,7 @@ const express = require("express");
 
 const {
   createMerchant,
-  loginUser,
+  loginMerchant,
   getAllUsers,
   getUserById,
   updateUser,
@@ -128,7 +128,7 @@ router.post("/verifymerchant", authorizeRoute, verifyMerchant);
  *        description: There was an error logging the user
  *
  */
-// router.post("/login", loginUser);
+router.post("/login", loginMerchant);
 
  /**
   * @swagger

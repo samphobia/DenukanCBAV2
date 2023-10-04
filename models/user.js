@@ -23,6 +23,11 @@ const User = sequelize.define('user', {
     unique: true,
     allowNull: false,
   },
+  role: {
+    type: Sequelize.ENUM("admin", "manager"),
+    defaultValue: "admin",
+    allowNull: true
+  },
   password: {
     type: Sequelize.STRING,
     allowNull: false
@@ -39,7 +44,7 @@ Merchant.hasMany(User, {
   foreignKey: 'merchantId', // This is the foreign key in the Account model
   onDelete: 'CASCADE',
 });
-User.belongsTo(Merchant);
+// User.belongsTo(Merchant);
 
 // User.sync({ force: true })
 //   .then(() => {

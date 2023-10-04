@@ -162,6 +162,45 @@ exports.verifyMerchant = async (req, res, next) => {
   }
 };
 
+exports.loginMerchant = async (req, res, next) => {
+  try {
+    const { merchantCoreId, password } = req.body;
+
+    // Find the merchant by merchantCoreId
+    const merchant = await Merchant.findOne({ where: { merchantCoreId } });
+
+    if (!merchant) {
+      return next(new ErrorResponse('Merchant not found', 404));
+    }
+
+    // Check if the provided password matches the hashed password in the database
+    const isPasswordMatch = await bcrypt.compare(password, merchant.password);
+
+    if (!isPasswordMatch) {
+      return next(new ErrorResponse('Invalid password', 401));
+    }
+
+    // Generate and return an authentication token for the merchant
+    const token = jwt.sign({ id: merchant.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRE,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      token,
+      data: {
+        merchant,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+
 // exports.loginUser = async (req, res, next) => {
 //   try {
 //     const { email, password } = req.body;

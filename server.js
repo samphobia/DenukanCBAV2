@@ -12,7 +12,7 @@ const sequelize = require('./config/database')
 // connectDB()
 
 const merchant = require("./routes/merchant");
-// const merchant = require("./routes/merchant");
+const user = require("./routes/user");
 const auth = require("./routes/auth")
 const customer = require("./routes/customer")
 const corporate = require("./routes/corporate")
@@ -68,7 +68,7 @@ app.use(express.json());
 
 
 app.use('/api/merchant', merchant);
-// app.use('/api/merchant', merchant);
+app.use('/api/user', user);
 app.use('/api/auth', auth)
 app.use('/api/customer', customer)
 app.use('/api/corporate', corporate)
