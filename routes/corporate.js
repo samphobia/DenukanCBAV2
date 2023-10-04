@@ -101,7 +101,7 @@ const router = express.Router()
  *        description: There was an error creating the news user
  *
  */
-router.post("/createcorporate", createCorporate);
+// router.post("/createcorporate", createCorporate);
 
  /**
   * @swagger
