@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const Merchant = require("../models/Merchant");
+const Merchant = require("../models/Merchants");
 
 const sequelize = require('../config/database');
 
