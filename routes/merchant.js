@@ -17,14 +17,14 @@ const router = express.Router({ mergeParams: true });
  * @swagger
  * tags:
  *  name: Authentication
- *  description: login and SignUp User
+ *  description: login and SignUp Merchant
  */
 
  /**
  * @swagger
  * components:
  *   schemas:
- *     User:
+ *     Merchant:
  *       type: object
  *       required:
  *         - title
@@ -36,10 +36,10 @@ const router = express.Router({ mergeParams: true });
  *           description: The auto-generated id of the book
  *         name:
  *           type: string
- *           description: The name of your user
+ *           description: The name of your merchant
  *         email:
  *           type: string
- *           description: The email of user
+ *           description: The email of merchant
  *         password:
  *           type: string
  *           description: Whether you have finished reading the book
@@ -102,9 +102,9 @@ router.post("/verifymerchant", authorizeRoute, verifyMerchant);
 
 /**
  * @swagger
- * /api/user/login:
+ * /api/merchant/login:
  *  post:
- *    summary: login user
+ *    summary: login merchant
  *    requestBody:
  *      required: true
  *      content:
@@ -112,20 +112,20 @@ router.post("/verifymerchant", authorizeRoute, verifyMerchant);
  *          schema:
  *            type: object
  *            properties:
- *              email:
+ *              merchantId:
  *                type: string
  *              password:
  *                type: string
  *    tags: [Authentication]
  *    responses:
  *      200:
- *        description: login user successfully
+ *        description: login merchant successfully
  *        content:
  *          application/json:
  *            schema:
  *              type: object
  *      400:
- *        description: There was an error logging the user
+ *        description: There was an error logging the merchant
  *
  */
 router.post("/login", loginMerchant);
@@ -152,9 +152,9 @@ router.get("/", getAllMerchant);
 
  /**
   * @swagger
-  * /api/user/{id}:
+  * /api/merchant/{id}:
   *  get:
-  *    summary: gets User by id
+  *    summary: gets Merchant by id
   *    tags: [Authentication]
   *    parameters:
   *       - in: path
@@ -167,22 +167,22 @@ router.get("/", getAllMerchant);
   *         description: news Article ID
   *    responses: 
   *      200:
-  *        description: User loaded successfully
+  *        description: Merchant loaded successfully
   *        content:
   *          application/json:
   *            schema:
   *              type: object
   *      400:
-  *        description: There was an error loading the User
+  *        description: There was an error loading the Merchant
   * 
   */
 // router.get("/:id", getUserById);
 
 /**
  * @swagger
- * /api/user/{id}:
+ * /api/merchant/{id}:
  *  put:
- *    summary: updates a user
+ *    summary: updates a merchant
  *    parameters:
  *      - in: path
  *        name: id
@@ -205,13 +205,13 @@ router.get("/", getAllMerchant);
  *    tags: [Authentication]
  *    responses:
  *      200:
- *        description: user updated successfully
+ *        description: merchant updated successfully
  *        content:
  *          application/json:
  *            schema:
  *              type: object
  *      400:
- *        description: There was an error creating the news user
+ *        description: There was an error creating the news merchant
  *
  */
 // router.put("/:id", updateUser);
@@ -220,9 +220,9 @@ router.get("/", getAllMerchant);
 
 /**
  * @swagger
- * /api/user/reset-password:
+ * /api/merchant/reset-password:
  *  post:
- *    summary: Reset user's password
+ *    summary: Reset merchant's password
  *    requestBody:
  *      required: true
  *      content:
