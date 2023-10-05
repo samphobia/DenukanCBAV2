@@ -98,6 +98,33 @@ const router = express.Router({ mergeParams: true });
  */
 router.post("/", createMerchant);
 
+
+/** 
+ * @swagger
+ * /api/merchant/verifymerchant:
+ *  post:
+ *    summary: verifies a Merchant sing OTP
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              otp:
+ *                type: string
+ *    tags: [Authentication]
+ *    responses:
+ *      200:
+ *        description: created new Merchant
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description: There was an error creating a merchant
+ *
+ */
 router.post("/verifymerchant", authorizeRoute, verifyMerchant);
 
 /**
