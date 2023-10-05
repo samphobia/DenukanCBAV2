@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const { Sequelize } = require('sequelize');
 const { ErrorResponse } = require('../utils/errorResponse');
-const User = require("../models/User");
+const User = require("../models/Users");
 const Merchant = require("../models/Merchants");
 const jwt = require('jsonwebtoken');
 const { sendUserMail } = require('../middleware/mailer');
