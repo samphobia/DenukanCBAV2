@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const ErrorResponse = require("../utils/errorResponse");
 const bcrypt = require("bcrypt");
-const Merchant = require("../models/Merchant");
+const Merchant = require("../models/Merchants");
 const { sendOTP } = require("../middleware/mailer");
 const { generateOTP } = require("../middleware/otp");
 const OTP = require("../models/Otp");
