@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("./async");
 const ErrorResponse = require("../utils/errorResponse");
-const Merchant = require("../models/Merchant");
+const Merchant = require("../models/Merchants");
 
 // Protect routes
 // Where ever we want to use this we just have to pass it as a first parameter
