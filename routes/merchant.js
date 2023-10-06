@@ -6,7 +6,6 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
-  resetPassword,
   verifyMerchant, 
   getAllMerchant} = require("../controllers/merchant");
   const { authorizeRoute } = require("../middleware/auth");
