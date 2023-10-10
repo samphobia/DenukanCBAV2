@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const ErrorResponse = require("../utils/errorResponse");
 const bcrypt = require("bcrypt");
 const Merchant = require("../models/Merchants");
-const { sendOTP } = require("../middleware/mailer");
+const ResetToken = require("../models/ResetToken");
+const { sendOTP, sendResetEmail } = require("../middleware/mailer");
 const { generateOTP } = require("../middleware/otp");
 const OTP = require("../models/Otp");
 
@@ -199,6 +200,94 @@ exports.loginMerchant = async (req, res, next) => {
     });
   }
 };
+
+exports.sendResetToken = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const merchant = await Merchant.findOne({ where: { email } });
+
+    if (!merchant) {
+      return next(new ErrorResponse('Merchant not found', 404));
+    }
+
+    // Generate a reset token with the merchant's ID and expiration time
+    const resetToken = jwt.sign(
+      { id: merchant.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Set the token expiration time
+    );
+
+    // Store the reset token in the database
+    await ResetToken.create({
+      email: merchant.email,
+      resetToken,
+      expiresAt: new Date(new Date().getTime() + 60 * 60 * 1000), // 1 hour
+    });
+
+    // Send an email to the merchant with a link containing the resetToken
+    const url = `${process.env.BASE_URL}/activate/${resetToken}`;
+    sendResetEmail(merchant.email, merchant.merchantName, resetToken);
+
+    res.status(200).json({
+      status: 'success',
+      token: resetToken,
+      message: 'Reset token sent successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const token = req.query;
+    const newPassword  = req.body;
+
+    // Verify the reset token
+    const decoded = jwt.verify(token, process.env.RESET_TOKEN_SECRET);
+
+    // Check if the reset token is still valid
+    const resetToken = await ResetToken.findOne({
+      where: {
+        email: decoded.email,
+        resetToken: token,
+        expiresAt: { [Sequelize.Op.gt]: new Date() }, // Check if the token is not expired
+      },
+    });
+
+    if (!resetToken) {
+      return next(new ErrorResponse('Invalid or expired reset token', 401));
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the merchant's password
+    const merchant = await Merchant.findOne({ where: { email: decoded.email } });
+    merchant.password = hashedPassword;
+    await merchant.save();
+
+    // Remove the used reset token
+    await resetToken.destroy();
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Password reset successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+
+
 
 
 // exports.loginUser = async (req, res, next) => {

@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const ErrorResponse = require("../utils/errorResponse");
 const asyncHandler = require("../middleware/async");
 const User = require("../models/Users");
+const Merchant = require("../models/Merchants");
+const ResetToken = require("../models/ResetToken");
 // const sendEmail = require("../utils/sendEmail");
 
 exports.getMe = async (req, res, next) => {
@@ -55,4 +57,44 @@ const setTokenCookieAndRespond = (user, statusCode, res) => {
       role: user.role
     }
   });
+};
+
+exports.sendResetToken = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const merchant = await Merchant.findOne({ where: { email } });
+
+    if (!merchant) {
+      return next(new ErrorResponse('Merchant not found', 404));
+    }
+
+    // Generate a reset token with the merchant's ID and expiration time
+    const resetToken = jwt.sign(
+      { id: merchant.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Set the token expiration time
+    );
+
+    // Store the reset token in the database
+    await ResetToken.create({
+      email: email,
+      resetToken,
+      expiresAt: new Date(new Date().getTime() + 60 * 60 * 1000), // 1 hour
+    });
+
+    // Send an email to the merchant with a link containing the resetToken
+    const url = `${process.env.BASE_URL}/reset-password?token=${resetToken}`;
+    sendResetEmail(merchant.name, url);
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Reset token sent successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
 };

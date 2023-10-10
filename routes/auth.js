@@ -1,6 +1,6 @@
 const express = require("express")
-const { getMe } = require("../controllers/auth")
-const { protectRoute } = require("../middleware/auth");
+const { sendResetToken} = require("../controllers/auth")
+const { authorizeRoute } = require("../middleware/auth");
 
 const router = express.Router()
 
@@ -24,5 +24,7 @@ const router = express.Router()
   * 
   */
 // router.get("/me", protectRoute, getMe)
+
+router.post("/resettoken/token", authorizeRoute, sendResetToken);
 
 module.exports = router;

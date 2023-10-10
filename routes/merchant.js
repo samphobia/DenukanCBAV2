@@ -4,6 +4,7 @@ const {
   createMerchant,
   loginMerchant,
   getAllUsers,
+  sendResetToken,
   getUserById,
   updateUser,
   verifyMerchant, 
@@ -273,6 +274,10 @@ router.get("/", getAllMerchant);
  *
  */
 // router.post("/reset-password", resetPassword)
+
+
+
+router.post("/resettoken/token", authorizeRoute, sendResetToken);
 
 
 module.exports = router;
