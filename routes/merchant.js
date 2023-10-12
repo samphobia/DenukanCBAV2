@@ -4,6 +4,7 @@ const {
   createMerchant,
   loginMerchant,
   getAllUsers,
+  resetPassword,
   sendResetToken,
   getUserById,
   updateUser,
@@ -276,8 +277,59 @@ router.get("/", getAllMerchant);
 // router.post("/reset-password", resetPassword)
 
 
+/**
+ * @swagger
+ * /api/merchant/resettoken:
+ *  post:
+ *    summary: Reset merchant's password
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *    tags: [Authentication]
+ *    responses:
+ *      200:
+ *        description: password has been reset
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description:  error with the process
+ */
+router.post("/resettoken", authorizeRoute, sendResetToken);
 
-router.post("/resettoken/token", authorizeRoute, sendResetToken);
+/**
+ * @swagger
+ * /api/merchant/resetpassword:
+ *  post:
+ *    summary: Reset merchant's password
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              new password:
+ *                type: string
+ *    tags: [Authentication]
+ *    responses:
+ *      200:
+ *        description: password has been reset
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description:  error with the process
+ */
+router.post("/resettoken/resettoken", authorizeRoute, resetPassword);
 
 
 module.exports = router;
