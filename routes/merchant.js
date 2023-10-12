@@ -79,6 +79,8 @@ const router = express.Router({ mergeParams: true });
  *                type: string
  *              phone:
  *                type: string
+ *              image:
+ *                type: string
  *              address:
  *                type: string
  *              description:
@@ -214,6 +216,8 @@ router.get("/", getAllMerchant);
  *              phone:
  *                type: string
  *              address:
+ *                type: string
+ *              image:
  *                type: string
  *              description:
  *                type: string
