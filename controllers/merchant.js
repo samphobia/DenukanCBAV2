@@ -417,39 +417,46 @@ exports.getAllMerchant = async (req, res, next) => {
 //   }
 // };
 
-// exports.resetPassword = async (req, res, next) => {
-//   try {
-//     const { email, newPassword } = req.body;
+exports.updateMerchant = async (req, res, next) => {
+  try {
+    const merchantId = req.params.id;
+    const { merchantName, sortCode, address, colorCode, phone, description, email } = req.body;
 
-//     if (!email || !newPassword) {
-//       return next(
-//         new ErrorResponse(`Please provide email and new password`, 400)
-//       );
-//     }
+    // Check if the merchant exists
+    const merchant = await Merchant.findByPk(merchantId);
 
-//     const user = await Merchant.findOne({ where: { email } });
-//     if (!user) {
-//       return next(new ErrorResponse(`Merchant not found`, 404));
-//     }
+    if (!merchant) {
+      return next(new ErrorResponse(`Merchant not found`, 404));
+    }
 
-//     // Hash the new password before updating in the database
-//     const hashedPassword = await bcrypt.hash(newPassword, 10);
+    // Ensure the request is made by an authorized user (e.g., merchant or admin)
+    // Replace this with your own authorization logic based on your needs
 
-//     // Update the user's password
-//     user.password = hashedPassword;
-//     await user.save();
+    // Update merchant properties
+    merchant.merchantName = merchantName || merchant.merchantName;
+    merchant.sortCode = sortCode || merchant.sortCode;
+    merchant.address = address || merchant.address;
+    merchant.colorCode = colorCode || merchant.colorCode;
+    merchant.phone = phone || merchant.phone;
+    merchant.description = description || merchant.description;
+    merchant.email = email || merchant.email;
 
-//     res.status(200).json({
-//       status: "success",
-//       message: "Password reset successful",
-//     });
-//   } catch (err) {
-//     res.status(400).json({
-//       status: false,
-//       message: "failed to reset user password",
-//     });
-//   }
-// };
+    // Save the updated merchant
+    await merchant.save();
+
+    res.status(200).json({
+      statuscode: "00",
+      status: 'success',
+      data: merchant,
+      message: 'Merchant updated successfully',
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
 
 // const setTokenCookieAndRespond = (user, statusCode, res) => {
 //   const token = jwt.sign({ id: user.id }, `${process.env.JWT_SECRET}`);
