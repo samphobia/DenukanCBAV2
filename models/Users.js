@@ -44,7 +44,7 @@ Merchant.hasMany(User, {
   foreignKey: 'merchantId', // This is the foreign key in the Account model
   onDelete: 'CASCADE',
 });
-// User.belongsTo(Merchant);
+User.belongsTo(Merchant);
 
 // User.sync({ force: true })
 //   .then(() => {

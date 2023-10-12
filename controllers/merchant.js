@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const ErrorResponse = require("../utils/errorResponse");
 const bcrypt = require("bcrypt");
 const Merchant = require("../models/Merchants");
-const { sendOTP } = require("../middleware/mailer");
+const ResetToken = require("../models/ResetToken");
+const { sendOTP, sendResetEmail } = require("../middleware/mailer");
 const { generateOTP } = require("../middleware/otp");
 const OTP = require("../models/Otp");
 
@@ -94,14 +95,16 @@ exports.createMerchant = async (req, res, next) => {
       url
     );
     res.send({
-      id: merchant.id,
-      code: "00",
-      message: "SUCCDESS",
-      merchantName: merchantName,
-      token: token,
-      otp: savedOTP,
-      message:
-        "Registration Success...Please enter your OTP is the provided section on the verification page",
+      data: {
+        otp: savedOTP.otp,
+      },
+      status: "00",
+      // id: merchant.id,
+      // code: "00",
+      // message: "SUCCDESS",
+      // merchantName: merchantName,
+      // token: token,
+      message: "Registration Success...Please enter your OTP is the provided section on the verification page",
     });
   } catch (err) {
     res.status(400).json({
@@ -151,13 +154,16 @@ exports.verifyMerchant = async (req, res, next) => {
     await merchant.save();
 
     res.status(200).json({
-      status: "success",
+      code: "00",
+      message: "Success",
+      data: {},
       message: "User verified successfully",
     });
   } catch (err) {
     res.status(400).json({
       status: "error",
-      message: err.message,
+      message: "There was an error verifying the OTP",
+      // message: err.message,
     });
   }
 };
@@ -186,19 +192,114 @@ exports.loginMerchant = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: 'success',
-      token,
       data: {
+        bearerToken: token,
+      },
+      user: {
         merchant,
       },
+      code: "00",
+      message: 'success',
     });
   } catch (err) {
     res.status(400).json({
       status: 'error',
-      message: err.message,
+      message: "Login failed",
     });
   }
 };
+
+exports.sendResetToken = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const merchant = await Merchant.findOne({ where: { email } });
+
+    if (!merchant) {
+      return next(new ErrorResponse('Merchant not found', 404));
+    }
+
+    // Generate a reset token with the merchant's ID and expiration time
+    const resetToken = jwt.sign(
+      { id: merchant.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Set the token expiration time
+    );
+
+    // Store the reset token in the database
+    await ResetToken.create({
+      email: merchant.email,
+      resetToken,
+      expiresAt: new Date(new Date().getTime() + 60 * 60 * 1000), // 1 hour
+    });
+
+    // Send an email to the merchant with a link containing the resetToken
+    const url = `${process.env.BASE_URL}/activate/${resetToken}`;
+    sendResetEmail(merchant.email, merchant.merchantName, resetToken);
+
+    res.status(200).json({
+      code: "00",
+      data: {},
+      status: 'success',
+      token: resetToken,
+      message: 'Reset token sent successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: "There was a problem sending the reset token",
+    });
+  }
+};
+
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const token = req.query;
+    const newPassword  = req.body;
+
+    // Verify the reset token
+    const decoded = jwt.verify(token, process.env.RESET_TOKEN_SECRET);
+
+    // Check if the reset token is still valid
+    const resetToken = await ResetToken.findOne({
+      where: {
+        email: decoded.email,
+        resetToken: token,
+        expiresAt: { [Sequelize.Op.gt]: new Date() }, // Check if the token is not expired
+      },
+    });
+
+    if (!resetToken) {
+      return next(new ErrorResponse('Invalid or expired reset token', 401));
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the merchant's password
+    const merchant = await Merchant.findOne({ where: { email: decoded.email } });
+    merchant.password = hashedPassword;
+    await merchant.save();
+
+    // Remove the used reset token
+    await resetToken.destroy();
+
+    res.status(200).json({
+      code: "00",
+      status: 'success',
+      data: {},
+      message: 'Password reset successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: "token reset failed",
+    });
+  }
+};
+
+
+
 
 
 // exports.loginUser = async (req, res, next) => {
@@ -242,11 +343,12 @@ exports.loginMerchant = async (req, res, next) => {
 
 exports.getAllMerchant = async (req, res, next) => {
   try {
-    const users = await Merchant.findAll();
+    const merchant = await Merchant.findAll();
 
     res.status(200).json({
+      code: "00",
       status: "success",
-      user: users,
+      data: merchant,
     });
   } catch (err) {
     res.status(400).json({
