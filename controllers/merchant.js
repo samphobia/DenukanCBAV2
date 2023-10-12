@@ -6,6 +6,11 @@ const ResetToken = require("../models/ResetToken");
 const { sendOTP, sendResetEmail } = require("../middleware/mailer");
 const { generateOTP } = require("../middleware/otp");
 const OTP = require("../models/Otp");
+const {
+  validateEmail,
+  validatePhoneNumber,
+  validatePassword,
+} = require("../helpers/validator");
 
 
 function generateMerchantId() {
@@ -36,17 +41,35 @@ exports.createMerchant = async (req, res, next) => {
       phone,
       description,
       email,
+      image,
       password,
       instagram,
       facebook,
       twitter,
     } = req.body;
 
+    if (!validateEmail(email)) {
+      return res.status(400).json({
+        message: "invalid email address",
+      });
+    }
+
     const existingMerchant = await Merchant.findOne({ where: { email } });
     if (existingMerchant) {
       return next(new ErrorResponse(`Merchant already exist`, 401));
     }
 
+    if (!validatePhoneNumber(phone)) {
+      return res.status(400).json({
+        message: "invalid phone number",
+      });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(400).json({
+        message: "password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
+      });
+    }
     // Hash the password before saving to the database
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -60,6 +83,7 @@ exports.createMerchant = async (req, res, next) => {
       phone,
       description,
       email,
+      image,
       password: hashedPassword,
       instagram,
       facebook,
@@ -109,7 +133,7 @@ exports.createMerchant = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({
       status: "error",
-      message: err.message,
+      message: "Registration failed",
     });
   }
 };

@@ -47,6 +47,10 @@ const Merchant = sequelize.define('merchant', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  image: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
   isVerified: {
     type: Sequelize.BOOLEAN,
     defaultAValue: false
