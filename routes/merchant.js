@@ -7,7 +7,7 @@ const {
   resetPassword,
   sendResetToken,
   getUserById,
-  updateUser,
+  updateMerchant,
   verifyMerchant, 
   getAllMerchant} = require("../controllers/merchant");
   const { authorizeRoute } = require("../middleware/auth");
@@ -76,6 +76,10 @@ const router = express.Router({ mergeParams: true });
  *              sortCode:
  *                type: string
  *              colorCode:
+ *                type: string
+ *              phone:
+ *                type: string
+ *              address:
  *                type: string
  *              description:
  *                type: string
@@ -178,33 +182,6 @@ router.post("/login", loginMerchant);
   */
 router.get("/", getAllMerchant);
 
- /**
-  * @swagger
-  * /api/merchant/{id}:
-  *  get:
-  *    summary: gets Merchant by id
-  *    tags: [Authentication]
-  *    parameters:
-  *       - in: path
-  *         name: id
-  *         schema:
-  *            type: array
-  *            items:
-  *               type: string
-  *         required: true
-  *         description: news Article ID
-  *    responses: 
-  *      200:
-  *        description: Merchant loaded successfully
-  *        content:
-  *          application/json:
-  *            schema:
-  *              type: object
-  *      400:
-  *        description: There was an error loading the Merchant
-  * 
-  */
-// router.get("/:id", getUserById);
 
 /**
  * @swagger
@@ -224,11 +201,27 @@ router.get("/", getAllMerchant);
  *          schema:
  *            type: object
  *            properties:
- *              name:
+ *              merchantName:
  *                type: string
  *              email:
  *                type: string
- *              role:
+ *              password:
+ *                type: string
+ *              sortCode:
+ *                type: string
+ *              colorCode:
+ *                type: string
+ *              phone:
+ *                type: string
+ *              address:
+ *                type: string
+ *              description:
+ *                type: string
+ *              instagram:
+ *                type: string
+ *              facebook:
+ *                type: string
+ *              twitter:
  *                type: string
  *    tags: [Authentication]
  *    responses:
@@ -242,39 +235,10 @@ router.get("/", getAllMerchant);
  *        description: There was an error creating the news merchant
  *
  */
-// router.put("/:id", updateUser);
+router.put("/:id", updateMerchant);
 
 
 
-/**
- * @swagger
- * /api/merchant/reset-password:
- *  post:
- *    summary: Reset merchant's password
- *    requestBody:
- *      required: true
- *      content:
- *        application/json:
- *          schema:
- *            type: object
- *            properties:
- *              email:
- *                type: string
- *              new password:
- *                type: string
- *    tags: [Authentication]
- *    responses:
- *      200:
- *        description: password has been reset
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *      400:
- *        description:  error with the process
- *
- */
-// router.post("/reset-password", resetPassword)
 
 
 /**
