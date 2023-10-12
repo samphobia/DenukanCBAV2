@@ -95,14 +95,16 @@ exports.createMerchant = async (req, res, next) => {
       url
     );
     res.send({
-      id: merchant.id,
-      code: "00",
-      message: "SUCCDESS",
-      merchantName: merchantName,
-      token: token,
-      otp: savedOTP,
-      message:
-        "Registration Success...Please enter your OTP is the provided section on the verification page",
+      data: {
+        otp: savedOTP.otp,
+      },
+      status: "00",
+      // id: merchant.id,
+      // code: "00",
+      // message: "SUCCDESS",
+      // merchantName: merchantName,
+      // token: token,
+      message: "Registration Success...Please enter your OTP is the provided section on the verification page",
     });
   } catch (err) {
     res.status(400).json({
@@ -152,13 +154,16 @@ exports.verifyMerchant = async (req, res, next) => {
     await merchant.save();
 
     res.status(200).json({
-      status: "success",
+      code: "00",
+      message: "Success",
+      data: {},
       message: "User verified successfully",
     });
   } catch (err) {
     res.status(400).json({
       status: "error",
-      message: err.message,
+      message: "There was an error verifying the OTP",
+      // message: err.message,
     });
   }
 };
@@ -187,16 +192,19 @@ exports.loginMerchant = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: 'success',
-      token,
       data: {
+        bearerToken: token,
+      },
+      user: {
         merchant,
       },
+      code: "00",
+      message: 'success',
     });
   } catch (err) {
     res.status(400).json({
       status: 'error',
-      message: err.message,
+      message: "Login failed",
     });
   }
 };
@@ -230,6 +238,8 @@ exports.sendResetToken = async (req, res, next) => {
     sendResetEmail(merchant.email, merchant.merchantName, resetToken);
 
     res.status(200).json({
+      code: "00",
+      data: {},
       status: 'success',
       token: resetToken,
       message: 'Reset token sent successfully',
@@ -237,7 +247,7 @@ exports.sendResetToken = async (req, res, next) => {
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      message: err.message,
+      message: "There was a problem sending the reset token",
     });
   }
 };
@@ -275,13 +285,15 @@ exports.resetPassword = async (req, res, next) => {
     await resetToken.destroy();
 
     res.status(200).json({
+      code: "00",
       status: 'success',
+      data: {},
       message: 'Password reset successfully',
     });
   } catch (err) {
     res.status(500).json({
       status: 'error',
-      message: err.message,
+      message: "token reset failed",
     });
   }
 };
@@ -331,11 +343,12 @@ exports.resetPassword = async (req, res, next) => {
 
 exports.getAllMerchant = async (req, res, next) => {
   try {
-    const users = await Merchant.findAll();
+    const merchant = await Merchant.findAll();
 
     res.status(200).json({
+      code: "00",
       status: "success",
-      user: users,
+      data: merchant,
     });
   } catch (err) {
     res.status(400).json({

@@ -55,19 +55,17 @@ exports.createUser = async (req, res, next) => {
       url
     );
     res.send({
-      id: merchant.id,
       code: "00",
-      message: "SUCCDESS",
-      merchantName: merchantName,
-      token: token,
-      otp: savedOTP,
-      message:
-        "Registration Success...Please enter your OTP is the provided section on the verification page",
+      data: {
+        bearerToken: token,
+        user: user
+      },
+      message: "User Created Successfully. A welcome mail has been sent to the User's mail",
     });
   } catch (err) {
     res.status(400).json({
       status: 'error',
-      message: err.message,
+      message: "User not created",
     });
   }
 };
@@ -114,12 +112,15 @@ exports.userLogin = async (req, res, next) => {
 
     // Send the token in the response
     res.status(200).json({
+      code: "00",
       status: 'success',
       user: {
+        bearerToken: token,
         id: user.id,
         role: user.role,
       },
-      token,
+      message: "Login Successfully",
+
     });
   } catch (err) {
     res.status(500).json({
