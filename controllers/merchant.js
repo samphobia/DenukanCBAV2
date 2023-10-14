@@ -10,8 +10,9 @@ const {
   validateEmail,
   validatePhoneNumber,
   validatePassword,
+  validateLength,
+  validateRequiredFields,
 } = require("../helpers/validator");
-
 
 function generateMerchantId() {
   const min = 1000000000; // 10 digits
@@ -26,6 +27,23 @@ function generateMerchantId() {
 
 exports.createMerchant = async (req, res, next) => {
   try {
+    const requiredFields = [
+      "merchantName",
+      "sortCode",
+      "email",
+      "address",
+      "colorCode",
+      "phone",
+      "description",
+      "image",
+      "password",
+    ];
+    const missingFieldsError = validateRequiredFields(req, res, requiredFields);
+
+    if (missingFieldsError) {
+      return missingFieldsError;
+    }
+
     // Generate a unique 10-digit merchantId
     const merchantCoreId = generateMerchantId();
 
@@ -49,25 +67,34 @@ exports.createMerchant = async (req, res, next) => {
     } = req.body;
 
     if (!validateEmail(email)) {
-      return res.status(400).json({
+      return res.status(403).json({
         message: "invalid email address",
       });
     }
 
     const existingMerchant = await Merchant.findOne({ where: { email } });
     if (existingMerchant) {
-      return next(new ErrorResponse(`Merchant already exist`, 401));
+      return res.status(403).json({
+        message: "Merchant already exist.",
+      });
     }
 
     if (!validatePhoneNumber(phone)) {
-      return res.status(400).json({
+      return res.status(403).json({
         message: "invalid phone number",
       });
     }
 
-    if (!validatePassword(password)) {
+    if (!validateLength(merchantName, 3, 30)) {
       return res.status(400).json({
-        message: "password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
+        message: "Name must between 3 and 30 characters.",
+      });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(403).json({
+        message:
+          "password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character",
       });
     }
     // Hash the password before saving to the database
@@ -118,7 +145,7 @@ exports.createMerchant = async (req, res, next) => {
       otp,
       url
     );
-    res.send({
+    res.status(201).json({
       data: {
         otp: savedOTP.otp,
       },
@@ -128,7 +155,8 @@ exports.createMerchant = async (req, res, next) => {
       // message: "SUCCDESS",
       // merchantName: merchantName,
       // token: token,
-      message: "Registration Success...Please enter your OTP is the provided section on the verification page",
+      message:
+        "Registration Success...Please enter your OTP is the provided section on the verification page",
     });
   } catch (err) {
     res.status(400).json({
@@ -141,36 +169,42 @@ exports.createMerchant = async (req, res, next) => {
 exports.verifyMerchant = async (req, res, next) => {
   try {
     const { otp } = req.body;
-    const merchantId = req.merchant.id
+    const merchantId = req.merchant.id;
 
     // Find the user by ID
     const merchant = await Merchant.findByPk(merchantId);
-    console.log(merchantId)
+    console.log(merchantId);
 
     if (!merchant) {
-      return next(new ErrorResponse(`Merchant not found`, 404));
+      return res.status(404).json({
+        message: "Merchant not found.",
+      });
     }
-
-
 
     const storedOTP = await OTP.findOne({
       where: {
-        userId: merchantId
+        userId: merchantId,
       },
     });
 
     if (!storedOTP) {
-      return next(new ErrorResponse('OTP not found', 404));
+      return res.status(404).json({
+        message: "OTP not found",
+      });
     }
 
     // Check if the provided OTP matches the one generated during registration
     if (otp !== storedOTP.otp) {
-      return next(new ErrorResponse('Invalid OTP', 401));
+      return res.status(403).json({
+        message: "Invalid OTP",
+      });
     }
 
     const currentTime = new Date();
     if (currentTime > storedOTP.expiresAt) {
-      return next(new ErrorResponse('OTP has expired', 401));
+      return res.status(403).json({
+        message: "OTP has expired",
+      });
     }
 
     // Mark the user as verified
@@ -184,7 +218,7 @@ exports.verifyMerchant = async (req, res, next) => {
       message: "User verified successfully",
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(401).json({
       status: "error",
       message: "There was an error verifying the OTP",
       // message: err.message,
@@ -200,14 +234,18 @@ exports.loginMerchant = async (req, res, next) => {
     const merchant = await Merchant.findOne({ where: { merchantCoreId } });
 
     if (!merchant) {
-      return next(new ErrorResponse('Merchant not found', 404));
+      return res.status(404).json({
+        message: "Merchant not found.",
+      });
     }
 
     // Check if the provided password matches the hashed password in the database
     const isPasswordMatch = await bcrypt.compare(password, merchant.password);
 
     if (!isPasswordMatch) {
-      return next(new ErrorResponse('Invalid password', 401));
+      return res.status(403).json({
+        message: "Invalid Password",
+      });
     }
 
     // Generate and return an authentication token for the merchant
@@ -217,17 +255,17 @@ exports.loginMerchant = async (req, res, next) => {
 
     res.status(200).json({
       data: {
-        bearerToken: token,
+        token: token,
       },
       user: {
         merchant,
       },
       code: "00",
-      message: 'success',
+      message: "success",
     });
   } catch (err) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       message: "Login failed",
     });
   }
@@ -240,14 +278,16 @@ exports.sendResetToken = async (req, res, next) => {
     const merchant = await Merchant.findOne({ where: { email } });
 
     if (!merchant) {
-      return next(new ErrorResponse('Merchant not found', 404));
+      return res.status(404).json({
+        message: "Merchant not found.",
+      });
     }
 
     // Generate a reset token with the merchant's ID and expiration time
     const resetToken = jwt.sign(
       { id: merchant.id },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Set the token expiration time
+      { expiresIn: "1h" } // Set the token expiration time
     );
 
     // Store the reset token in the database
@@ -264,13 +304,13 @@ exports.sendResetToken = async (req, res, next) => {
     res.status(200).json({
       code: "00",
       data: {},
-      status: 'success',
+      status: "success",
       token: resetToken,
-      message: 'Reset token sent successfully',
+      message: "Reset token sent successfully",
     });
   } catch (err) {
-    res.status(500).json({
-      status: 'error',
+    res.status(400).json({
+      status: "error",
       message: "There was a problem sending the reset token",
     });
   }
@@ -279,7 +319,7 @@ exports.sendResetToken = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
     const token = req.query;
-    const newPassword  = req.body;
+    const newPassword = req.body;
 
     // Verify the reset token
     const decoded = jwt.verify(token, process.env.RESET_TOKEN_SECRET);
@@ -294,14 +334,18 @@ exports.resetPassword = async (req, res, next) => {
     });
 
     if (!resetToken) {
-      return next(new ErrorResponse('Invalid or expired reset token', 401));
+      return res.status(401).json({
+        message: "Invalid or Expired Token",
+      });
     }
 
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update the merchant's password
-    const merchant = await Merchant.findOne({ where: { email: decoded.email } });
+    const merchant = await Merchant.findOne({
+      where: { email: decoded.email },
+    });
     merchant.password = hashedPassword;
     await merchant.save();
 
@@ -310,60 +354,17 @@ exports.resetPassword = async (req, res, next) => {
 
     res.status(200).json({
       code: "00",
-      status: 'success',
+      status: "success",
       data: {},
-      message: 'Password reset successfully',
+      message: "Password reset successfully",
     });
   } catch (err) {
-    res.status(500).json({
-      status: 'error',
+    res.status(400).json({
+      status: "error",
       message: "token reset failed",
     });
   }
 };
-
-
-
-
-
-// exports.loginUser = async (req, res, next) => {
-//   try {
-//     const { email, password } = req.body;
-
-//     if (!email || !password) {
-//       return next(new ErrorResponse(`Please provide email and password`, 400));
-//     }
-
-//     const user = await Merchant.findOne({ where: { email } });
-//     if (!user) {
-//       return next(new ErrorResponse(`Merchant not found`, 401));
-//     }
-
-//     // Compare the provided password with the hashed password in the database
-//     const isPasswordValid = await bcrypt.compare(password, user.password);
-
-//     if (!isPasswordValid) {
-//       return next(new ErrorResponse(`Invalid credentials`, 401));
-//     }
-
-//     // const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
-
-//     // res.status(200).json({
-//     //   status: 'success',
-//     //   data: {
-//     //     user,
-//     //     token
-//     //   }
-//     // });
-
-//     setTokenCookieAndRespond(user, 202, res);
-//   } catch (err) {
-//     res.status(400).json({
-//       status: false,
-//       message: "failed to login user",
-//     });
-//   }
-// };
 
 exports.getAllMerchant = async (req, res, next) => {
   try {
@@ -377,7 +378,7 @@ exports.getAllMerchant = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({
       status: false,
-      message: "failed to load all users",
+      message: "failed to load all Mercahnts",
     });
   }
 };
@@ -444,7 +445,15 @@ exports.getAllMerchant = async (req, res, next) => {
 exports.updateMerchant = async (req, res, next) => {
   try {
     const merchantId = req.params.id;
-    const { merchantName, sortCode, address, colorCode, phone, description, email } = req.body;
+    const {
+      merchantName,
+      sortCode,
+      address,
+      colorCode,
+      phone,
+      description,
+      email,
+    } = req.body;
 
     // Check if the merchant exists
     const merchant = await Merchant.findByPk(merchantId);
@@ -470,13 +479,13 @@ exports.updateMerchant = async (req, res, next) => {
 
     res.status(200).json({
       statuscode: "00",
-      status: 'success',
+      status: "success",
       data: merchant,
-      message: 'Merchant updated successfully',
+      message: "Merchant updated successfully",
     });
   } catch (err) {
     res.status(400).json({
-      status: 'error',
+      status: "error",
       message: err.message,
     });
   }
