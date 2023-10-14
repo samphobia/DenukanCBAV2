@@ -70,7 +70,9 @@ exports.authorizeRoute = async (req, res, next) => {
      }
 
   if (!token) {
-    return next(new ErrorResponse('Not authorized to access this route', 401));
+    return res.status(401).json({
+      message: "Not Authorized to access this route",
+    });
   }
 
   try {
@@ -81,7 +83,9 @@ exports.authorizeRoute = async (req, res, next) => {
     const merchant = await Merchant.findByPk(decoded.id);
 
     if (!merchant) {
-      return next(new ErrorResponse('Merchant not found', 404));
+      return res.status(404).json({
+        message: "Merchant Not found",
+      });
     }
 
     // Attach the authenticated merchant to the request object
@@ -89,7 +93,9 @@ exports.authorizeRoute = async (req, res, next) => {
 
     next();
   } catch (err) {
-    return next(new ErrorResponse('Not authorized to access this route', 401));
+    return res.status(401).json({
+      message: "Not Authorized to access this route",
+    });
   }
 };
 

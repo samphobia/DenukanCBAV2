@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { createUser, userLogin } = require("../controllers/user");
+const { createUser, userLogin, getAllUsers } = require("../controllers/user");
 const { authorizeRoute } = require("../middleware/auth");
 
 const router = express.Router({ mergeParams: true });
@@ -83,6 +83,56 @@ const router = express.Router({ mergeParams: true });
  */
 router.post("/", authorizeRoute, createUser);
 
+/**
+ * @swagger
+ * /api/user/login:
+ *  post:
+ *    summary: login user
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              merchantCoreId:
+ *                type: string
+ *              email:
+ *                type: string
+ *              password:
+ *                type: string
+ *    tags: [User]
+ *    responses:
+ *      200:
+ *        description: user users successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description: There was an error logging the users
+ *
+ */
 router.post("/login", userLogin)
+
+ /**
+  * @swagger
+  * /api/user:
+  *  get:
+  *    summary: gets all Users whether admin or others
+  *    description: gets all Users 
+  *    tags: [Authentication]
+  *    responses: 
+  *      200:
+  *        description: Userst loaded successfully
+  *        content:
+  *          application/json:
+  *            schema:
+  *              type: object
+  *      400:
+  *        description: There was an error loading the user
+  * 
+  */
+ router.get("/", getAllUsers);
 
 module.exports = router;
