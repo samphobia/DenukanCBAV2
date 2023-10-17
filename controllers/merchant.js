@@ -256,9 +256,7 @@ exports.loginMerchant = async (req, res, next) => {
     res.status(200).json({
       data: {
         token: token,
-      },
-      user: {
-        merchant,
+        merchant
       },
       code: "00",
       message: "success",
