@@ -83,6 +83,7 @@ exports.createUser = async (req, res, next) => {
       email,
       role,
       password: hashedPassword,
+      merchantId,
     });
 
     const token = jwt.sign({ id: merchant.id }, process.env.JWT_SECRET, {
