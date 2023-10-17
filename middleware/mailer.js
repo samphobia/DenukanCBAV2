@@ -36,9 +36,7 @@ exports.sendOTP = async (email, name, id, otp, url) => {
     });
     const accessToken = await auth.getAccessToken();
     const smtp = nodemailer.createTransport({
-      host: "smtp.gmail.com",
       port: 465,
-      secure: true,
       service: "gmail",
       auth: {
         type: "OAuth2",
