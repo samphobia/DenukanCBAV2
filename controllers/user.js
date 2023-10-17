@@ -5,28 +5,10 @@ const User = require("../models/Users");
 const Merchant = require("../models/Merchants");
 const jwt = require('jsonwebtoken');
 const { sendUserMail } = require('../middleware/mailer');
-const { validateEmail, validatePassword } = require('../helpers/validator');
+const { validateEmail, validatePassword, validateRequiredFields } = require('../helpers/validator');
 
 // Assuming you have the User and Merchant models already defined
 
-
-function validateRequiredFields(req, res, requiredFields) {
-  const missingFields = [];
-
-  for (const field of requiredFields) {
-    if (!req.body[field]) {
-      missingFields.push(field);
-    }
-  }
-
-  if (missingFields.length > 0) {
-    return res.status(400).json({
-      message: `Missing required fields: ${missingFields.join(', ')}`,
-    });
-  }
-
-  return null; // No missing fields
-}
 
 exports.createUser = async (req, res, next) => {
   try {
