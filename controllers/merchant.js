@@ -144,20 +144,25 @@ exports.createMerchant = async (req, res, next) => {
       merchant.merchantCoreId,
       otp,
       url
-    );
-    res.status(201).json({
-      data: {
-        otp: savedOTP.otp,
-      },
-      status: "00",
-      // id: merchant.id,
-      // code: "00",
-      // message: "SUCCDESS",
-      // merchantName: merchantName,
-      // token: token,
-      message:
-        "Registration Success...Please enter your OTP is the provided section on the verification page",
-    });
+    )
+      .then(
+        res.status(201).json({
+          data: {
+            otp: savedOTP.otp,
+          },
+          status: "00",
+          // id: merchant.id,
+          // code: "00",
+          // message: "SUCCDESS",
+          // merchantName: merchantName,
+          // token: token,
+          message:
+            "Registration Success...Please enter your OTP is the provided section on the verification page",
+        })
+      )
+      .catch((error) => {
+        console.log(error);
+      });
   } catch (err) {
     res.status(400).json({
       status: "error",
@@ -256,7 +261,7 @@ exports.loginMerchant = async (req, res, next) => {
     res.status(200).json({
       data: {
         token: token,
-        merchant
+        merchant,
       },
       code: "00",
       message: "success",
