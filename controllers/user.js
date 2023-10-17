@@ -5,7 +5,7 @@ const User = require("../models/Users");
 const Merchant = require("../models/Merchants");
 const jwt = require('jsonwebtoken');
 const { sendUserMail } = require('../middleware/mailer');
-const { validateEmail, validatePassword, validateRequiredFields } = require('../helpers/validator');
+const { validateEmail, validatePassword, validateRequiredFields, validateLength } = require('../helpers/validator');
 
 // Assuming you have the User and Merchant models already defined
 
@@ -83,7 +83,10 @@ exports.createUser = async (req, res, next) => {
       email,
       role,
       password: hashedPassword,
-      merchantId,
+    });
+
+    const token = jwt.sign({ id: merchant.id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRE,
     });
 
     const url = `${process.env.BASE_URL}/activate/${token}`;
@@ -104,6 +107,7 @@ exports.createUser = async (req, res, next) => {
     res.status(400).json({
       status: 'error',
       message: "User not created",
+      message: err.message,
     });
   }
 };
