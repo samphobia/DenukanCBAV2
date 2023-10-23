@@ -138,7 +138,7 @@ exports.createMerchant = async (req, res, next) => {
 
     // Send the OTP to the user's email for verification
     const url = `${process.env.BASE_URL}/activate/${token}`;
-    sendOTP(
+    await sendOTP(
       merchant.email,
       merchant.merchantName,
       merchant.merchantCoreId,
