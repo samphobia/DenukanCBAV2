@@ -1,13 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const smtp =  nodemailer.createTransport({
-  host: 'live.smtp.mailtrap.io',
-  port: 2525, // Use the port provided by Mailtrap
-  auth: {
-    user: 'api',
-    pass: 'b5e6a1db3d82d687590eb6bd8ad4dc38',
-  },
-});
+
 
 
 // const { google } = require("googleapis");
@@ -55,6 +48,16 @@ const verifyTransporter = (transporter) => {
 
 exports.sendOTP = async (email, name, id, otp, url) => {
   try {
+
+    const smtp =  nodemailer.createTransport({
+      host: 'live.smtp.mailtrap.io',
+      port: 2525, // Use the port provided by Mailtrap
+      auth: {
+        user: 'api',
+        pass: 'b5e6a1db3d82d687590eb6bd8ad4dc38',
+      },
+    });
+    
     const verifiedTransporter = await verifyTransporter(smtp)
 
     const mailOptions = {
