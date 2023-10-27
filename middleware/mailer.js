@@ -57,7 +57,7 @@ exports.sendOTP = async (email, name, id, otp, url) => {
         pass: 'b5e6a1db3d82d687590eb6bd8ad4dc38',
       },
     });
-    
+
     const verifiedTransporter = await verifyTransporter(smtp)
 
     const mailOptions = {
@@ -74,7 +74,7 @@ exports.sendOTP = async (email, name, id, otp, url) => {
     throw error
   }
 }
-  
+
 
 exports.sendUserMail = (email, name, id, otp, url) => {
   auth.setCredentials({

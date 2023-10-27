@@ -171,6 +171,72 @@ exports.createMerchant = async (req, res, next) => {
   }
 };
 
+// Import necessary modules and models
+
+exports.resendOTP = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!validateEmail(email)) {
+      return res.status(403).json({
+        message: "Invalid email address",
+      });
+    }
+
+    const existingMerchant = await Merchant.findOne({ where: { email } });
+    if (!existingMerchant) {
+      return res.status(403).json({
+        message: "Merchant not found. Please register first.",
+      });
+    }
+
+    // Generate a new 6-digit OTP
+    const otp = generateOTP().toString();
+
+    // Calculate the expiration time (5 minutes from the current time)
+    const expirationTime = new Date();
+    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
+
+    // Update the OTP in the database
+    await OTP.update(
+      {
+        otp: otp,
+        expiresAt: expirationTime,
+      },
+      {
+        where: { userId: existingMerchant.id, recipientType: "merchant" },
+      }
+    );
+
+    // Send the new OTP to the user's email for verification
+    const url = `${process.env.BASE_URL}/activate/${token}`; // Modify the URL as needed
+    await sendOTP(
+      existingMerchant.email,
+      existingMerchant.merchantName,
+      existingMerchant.merchantCoreId,
+      otp,
+      url
+    )
+      .then(() => {
+        return res.status(200).json({
+          message: "New OTP sent successfully. Please check your email.",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).json({
+          message: "Failed to send OTP. Please try again later.",
+        });
+      });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "An error occurred while resending OTP. Please try again later.",
+    });
+  }
+};
+
+
 exports.verifyMerchant = async (req, res, next) => {
   try {
     const { otp } = req.body;

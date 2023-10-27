@@ -8,6 +8,7 @@ const {
   sendResetToken,
   getUserById,
   updateMerchant,
+  resendOTP,
   verifyMerchant, 
   getAllMerchant} = require("../controllers/merchant");
   const { authorizeRoute } = require("../middleware/auth");
@@ -297,7 +298,35 @@ router.post("/resettoken", authorizeRoute, sendResetToken);
  *      400:
  *        description:  error with the process
  */
-router.post("/resettoken/resettoken", authorizeRoute, resetPassword);
+router.post("/resettoken/resetpassword", authorizeRoute, resetPassword);
+
+
+/**
+ * @swagger
+ * /api/merchant/resendOTP:
+ *  post:
+ *    summary: Resend OTP
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *    tags: [Authentication]
+ *    responses:
+ *      200:
+ *        description: check email for another OTP
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *      400:
+ *        description:  error with the process
+ */
+router.post("/resendOTP", resendOTP);
 
 
 module.exports = router;
