@@ -149,7 +149,8 @@ exports.createMerchant = async (req, res, next) => {
         res.status(201).json({
           data: {
             otp: savedOTP.otp,
-            id: savedOTP.id
+            id: savedOTP.id,
+            token: token,
           },
           status: "00",
           // id: merchant.id,
