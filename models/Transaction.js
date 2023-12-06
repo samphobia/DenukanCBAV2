@@ -34,6 +34,14 @@ const Transactions = sequelize.define('Transactions', {
   },
 });
 
+// Define a one-to-many relationship between Customer and Account
+Account.hasMany(Transactions, {
+  foreignKey: 'accountId', // This is the foreign key in the Account model
+});
+Transactions.belongsTo(Account, {
+  foreignKey: 'accountId', // This is the foreign key in the Account model
+});
+
 // Transactions.sync({ force: true })
 //   .then(() => {
 //     console.log('Transactions table synced successfully');

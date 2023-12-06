@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');// Replace with your sequelize instance
 const sequelize = require('../config/database');
-const Customer = require('./Customer/models'); // Replace with the actual path to your Customer model
+const Customer = require('../models/Customer'); // Replace with the actual path to your Customer model
 
 
 const Account = sequelize.define('Account', {
@@ -10,29 +10,16 @@ const Account = sequelize.define('Account', {
     allowNull: false,
     primaryKey: true,
   },
-  title: {
-    type: Sequelize.ENUM('Mr', 'Mrs', 'Miss'),
-    allowNull: false
-  },
-  fullName: {
-    type: Sequelize.STRING,
+  customer_id: {
+    type: Sequelize.INTEGER,
     allowNull: false,
+    references: {
+      model: Customer,
+      key: 'id',
+    },
   },
-  otherName: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  sex: {
-    type: Sequelize.ENUM('male', 'female'),
-    allowNull: false
-  },
-  accountBranch: {
-    type: Sequelize.ENUM('Headbranch', 'OtherBranch'),
-    defaultValue: 'HeadBranch',
-    allowNull: false
-  },
-  accountProduct: {
-    type: Sequelize.ENUM('Current', 'Savings', 'Corporate'),
+  accountType: {
+    type: Sequelize.ENUM('Current', 'Savings', 'Corporate', 'Loan'),
     defaultValue: 'Savings',
     allowNull: false
   },
@@ -40,9 +27,6 @@ const Account = sequelize.define('Account', {
     type: Sequelize.STRING,
     allowNull: false,
     unique: true,
-  },
-  subBranch: {
-    type: Sequelize.STRING,
   },
   accountDescription: {
     type: Sequelize.STRING,
@@ -70,15 +54,26 @@ const Account = sequelize.define('Account', {
   ODRate: Sequelize.STRING,
   accountOfficer: Sequelize.STRING
   // ... other fields specific to the Account model
-});
+},
+{
+  timestamps: true
+}
+);
 
 // Define a one-to-many relationship between Customer and Account
 Customer.hasMany(Account, {
   foreignKey: 'customerId', // This is the foreign key in the Account model
   onDelete: 'CASCADE',
 });
-Account.belongsTo(Customer, {
-  foreignKey: 'customerId', // This is the foreign key in the Account model
-});
+Account.belongsTo(Customer);
+
+Account.sync({ force: true })
+  .then(() => {
+    console.log('Account table synced successfully');
+  })
+  .catch((error) => {
+    console.error('Error syncing Account table:', error);
+  });
+
 
 module.exports = Account;

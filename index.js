@@ -16,6 +16,7 @@ const user = require("./routes/user");
 const auth = require("./routes/auth")
 const customer = require("./routes/customer")
 const corporate = require("./routes/corporate")
+const account = require("./routes/account")
 
 const options = {
   definition: {

@@ -173,6 +173,6 @@ router.post("/createcustomer", createCustomer);
   *        description: There was an error loading the User
   * 
   */
-router.get("/createcustomer", getAllCustomers);
+router.get("/getallcustomers", getAllCustomers);
 
 module.exports = router;
