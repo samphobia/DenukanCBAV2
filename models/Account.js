@@ -67,13 +67,13 @@ Customer.hasMany(Account, {
 });
 Account.belongsTo(Customer);
 
-Account.sync({ force: true })
-  .then(() => {
-    console.log('Account table synced successfully');
-  })
-  .catch((error) => {
-    console.error('Error syncing Account table:', error);
-  });
+// Account.sync({ force: true })
+//   .then(() => {
+//     console.log('Account table synced successfully');
+//   })
+//   .catch((error) => {
+//     console.error('Error syncing Account table:', error);
+//   });
 
 
 module.exports = Account;
