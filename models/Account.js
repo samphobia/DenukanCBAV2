@@ -4,7 +4,7 @@ const Customer = require('../models/Customer'); // Replace with the actual path 
 
 
 const Account = sequelize.define('Account', {
-  account_id: {
+  id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
     allowNull: false,

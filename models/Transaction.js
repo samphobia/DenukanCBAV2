@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 
-const {sequelize} = require('../config/database');
+const { sequelize } = require('../config/database');
+const Account = require("../models/Account"); 
 
 const Transactions = sequelize.define('Transactions', {
   id: {
@@ -12,34 +13,34 @@ const Transactions = sequelize.define('Transactions', {
     type: Sequelize.INTEGER,
     allowNull: false,
     references: {
-      model: 'Account',
-      key: 'account_id',
+      model: 'Accounts',
+      key: 'id',
     },
   },
   transactionsType: {
     type: Sequelize.ENUM("Deposit", "Withdrawal", "Transfer"), // Assuming Transactionss are 6-digit strings, adjust as needed
     allowNull: false,
   },
-  expiresAt: {
-    type: Sequelize.DATE,
-    allowNull: false,
-  },
+  // expiresAt: {
+  //   type: Sequelize.DATE,
+  //   allowNull: false,
+  // },
   amount: {
     type: Sequelize.DECIMAL(12, 2),
     allowNull: false,
   },
   transaction_date: {
     type: Sequelize.DATE,
-    defaultValue: DataTypes.NOW,
+    defaultValue: Sequelize.NOW,
   },
 });
 
 // Define a one-to-many relationship between Customer and Account
 Account.hasMany(Transactions, {
-  foreignKey: 'accountId', // This is the foreign key in the Account model
+  foreignKey: 'account_id', // This is the foreign key in the Account model
 });
 Transactions.belongsTo(Account, {
-  foreignKey: 'accountId', // This is the foreign key in the Account model
+  foreignKey: 'account_id', // This is the foreign key in the Account model
 });
 
 // Transactions.sync({ force: true })
