@@ -11,7 +11,7 @@ const generateAccountNumber = () => {
 
 exports.createAccount = async (req, res) => {
   try {
-    const { customer_id, account_type, accountNumber } = req.body;
+    const { customer_id, account_type, accoutDescription, accountType } = req.body;
 
     // Check if the customer exists
     const customer = await Customer.findByPk(customer_id);
@@ -26,6 +26,8 @@ exports.createAccount = async (req, res) => {
         {
           customer_id,
           account_type,
+          accoutDescription,
+          accountType,
           accountNumber: generateAccountNumber()
         },
         { transaction: t }
@@ -58,7 +60,7 @@ exports.getAllAccounts = async (req, res) => {
 
     // Extract relevant information for each account
     const formattedAccounts = accounts.map((account) => ({
-      id: account.id,
+      id: account.account_id,
       customerName: `${account.Customer.firstName} ${account.Customer.lastName}`,
       accountType: account.accountType,
       accountNumber: account.accountNumber,
@@ -71,5 +73,28 @@ exports.getAllAccounts = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+  };
+
+exports.getAccountByType = async (req, res) => {
+  try {
+    // Assuming that you receive the account type in the request parameters
+    const { accountType } = req.params;
+
+    // Query the database to find accounts based on the provided accountType
+    const accounts = await Account.findAll({
+      where: {
+        accountType,
+      },
+    });
+
+    if (accounts.length === 0) {
+      return res.status(404).json({ message: 'No accounts found for the specified type' });
+    }
+
+    res.status(200).json({ message: 'Accounts retrieved successfully', accounts });
+  } catch (error) {
+    console.error('Error retrieving accounts:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
