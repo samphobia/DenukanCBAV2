@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
 const Phone = sequelize.define('Phone', {
   id: {

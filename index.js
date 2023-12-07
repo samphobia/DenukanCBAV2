@@ -4,7 +4,7 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
 const cors = require('cors')
 
-const sequelize = require('./config/database')
+const {sequelize} = require('./config/database')
 
 
 // dotenv.config({ path: "./config/config.env" })
@@ -78,6 +78,7 @@ app.use('/api/user', user);
 app.use('/api/auth', auth)
 app.use('/api/customer', customer)
 app.use('/api/corporate', corporate)
+app.use('/api/account', account)
 
 // User.hasOne(Merchant)
 // Merchant.belongsTo(User, {constraints: true, onDelete: 'CASACADE'})

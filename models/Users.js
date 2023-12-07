@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 const Merchant = require("../models/Merchants");
 
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 
 const User = sequelize.define('user', {
   id: {
