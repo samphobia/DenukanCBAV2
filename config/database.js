@@ -8,4 +8,4 @@ const sequelize = new Sequelize(process.env.MYSQL_ADDON_DB, process.env.MYSQL_AD
   host: process.env.MYSQL_HOST
 });
 
-module.exports = sequelize;
+module.exports = {sequelize};

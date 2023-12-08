@@ -1,5 +1,5 @@
 const express = require("express");
-const { createCustomer, getAllCustomers } = require('../controllers/customer')
+const { createCustomer, getAllCustomers, updateCustomer } = require('../controllers/customer')
 
 const router = express.Router()
 
@@ -174,5 +174,8 @@ router.post("/createcustomer", createCustomer);
   * 
   */
 router.get("/getallcustomers", getAllCustomers);
+
+
+router.patch("/updatecustomer/:customerId", updateCustomer);
 
 module.exports = router;

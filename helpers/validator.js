@@ -53,3 +53,24 @@ exports.validateRequiredFields = (req, res, requiredFields) => {
 
   return null; // No missing fields
 }
+
+exports.validateAccountId = (account_id) => {
+  // Check if account_id is a positive integer
+  const isPositiveInteger = Number.isInteger(account_id) && account_id > 0;
+
+  if (!isPositiveInteger) {
+    throw new Error('Invalid account_id. Must be a positive integer.');
+  }
+}
+
+exports.validateAmount = (amount) => {
+  // Ensure the input is a number or a string that represents a number
+  const parsedAmount = parseFloat(amount);
+  
+  // Ensure the parsed amount is a positive integer
+  if (!Number.isInteger(parsedAmount) || parsedAmount <= 0) {
+    return false;
+  }
+
+  return true;
+};

@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const sequelize = require('../config/database'); // Adjust the path as needed
+const {sequelize} = require('../config/database'); // Adjust the path as needed
 
 const ResetToken = sequelize.define('resetToken', {
   id: {
@@ -22,12 +22,12 @@ const ResetToken = sequelize.define('resetToken', {
   },
 });
 
-ResetToken.sync({ force: true })
-  .then(() => {
-    console.log('token table synced successfully');
-  })
-  .catch((error) => {
-    console.error('Error syncing User token:', error);
-  });
+// ResetToken.sync({ force: true })
+//   .then(() => {
+//     console.log('token table synced successfully');
+//   })
+//   .catch((error) => {
+//     console.error('Error syncing User token:', error);
+//   });
 
 module.exports = ResetToken;

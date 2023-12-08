@@ -1,5 +1,5 @@
 const { Sequelize } = require('sequelize');
-const sequelize = require('../config/database'); // Replace with your Sequelize instance
+const {sequelize} = require('../config/database'); // Replace with your Sequelize instance
 
 const OTP = sequelize.define('OTP', {
   id: {

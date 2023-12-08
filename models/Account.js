@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');// Replace with your sequelize instance
-const sequelize = require('../config/database');
+const {sequelize} = require('../config/database');
 const Customer = require('../models/Customer'); // Replace with the actual path to your Customer model
 
 
@@ -14,7 +14,7 @@ const Account = sequelize.define('Account', {
     type: Sequelize.INTEGER,
     allowNull: false,
     references: {
-      model: Customer,
+      model: 'Customers',
       key: 'id',
     },
   },
@@ -31,6 +31,7 @@ const Account = sequelize.define('Account', {
   accountDescription: {
     type: Sequelize.STRING,
     len: [5, 50],
+    defaultValue: 'Simple Savings',
   },
   blockView: {
     type: Sequelize.BOOLEAN,
@@ -60,16 +61,22 @@ const Account = sequelize.define('Account', {
 }
 );
 
-// Define a one-to-many relationship between Customer and Account
+// Customer.hasMany(Account, {// This is the foreign key in the Account model
+//   onUpdate: 'CASCADE',
+// });
+
+
 Customer.hasMany(Account, {
-  foreignKey: 'customerId', // This is the foreign key in the Account model
-  onDelete: 'CASCADE',
+  foreignZKey: 'customer_id',// This is the foreign key in the Account model
+  onUpdate: 'CASCADE',
 });
-Account.belongsTo(Customer);
+Account.belongsTo(Customer, {
+  foreignKey: 'customer_id'
+});
 
 // Account.sync({ force: true })
 //   .then(() => {
-//     console.log('Account table synced successfully');
+//     console.log('Accounts table synced successfully');
 //   })
 //   .catch((error) => {
 //     console.error('Error syncing Account table:', error);

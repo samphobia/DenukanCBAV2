@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize');
+const {sequelize} = require('../config/database');
+// const Account = require("../models/Account"); 
 
-const sequelize = require('../config/database');
-
-const Customer = sequelize.define('customer', {
+const Customer = sequelize.define('Customer', {
   id: {
     type: Sequelize.INTEGER,
     autoIncrement: true,
@@ -98,6 +98,14 @@ const Customer = sequelize.define('customer', {
   timestamps: true
 }
 );
+
+// Customer.hasMany(Account, {
+//   foreignZKey: 'customer_id',// This is the foreign key in the Account model
+//   onUpdate: 'CASCADE',
+// });
+// Account.belongsTo(Customer, {
+//   foreignKey: 'customer_id'
+// });
 
 // Customer.sync({ force: true })
 //   .then(() => {
