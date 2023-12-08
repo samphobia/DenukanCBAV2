@@ -60,7 +60,7 @@ exports.getAllAccounts = async (req, res) => {
 
     // Extract relevant information for each account
     const formattedAccounts = accounts.map((account) => ({
-      id: account.account_id,
+      id: account.id,
       customerName: `${account.Customer.firstName} ${account.Customer.lastName}`,
       accountType: account.accountType,
       accountNumber: account.accountNumber,

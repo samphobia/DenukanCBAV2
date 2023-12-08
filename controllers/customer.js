@@ -109,3 +109,35 @@ exports.getAllCustomers = async (req, res, next) => {
   }
 };
 
+exports.updateCustomer = async (req, res, next) => {
+  try {
+    const customerId = req.params.customerId; // Assuming customerId is part of the route parameters
+    const updatedCustomerData = req.body;
+
+    // Check if the customer exists
+    const existingCustomer = await Customer.findByPk(customerId);
+
+    if (!existingCustomer) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Customer not found',
+      });
+    }
+
+    // Update the customer data
+    await existingCustomer.update(updatedCustomerData);
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        customer: existingCustomer,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+

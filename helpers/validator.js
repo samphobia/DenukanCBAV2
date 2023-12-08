@@ -58,11 +58,19 @@ exports.validateAccountId = (account_id) => {
   // Check if account_id is a positive integer
   const isPositiveInteger = Number.isInteger(account_id) && account_id > 0;
 
-  if (account_id.length > 10 || account_id.length < 10) {
-    throw new Error('please enter a valid account number')
-  }
-
   if (!isPositiveInteger) {
     throw new Error('Invalid account_id. Must be a positive integer.');
   }
 }
+
+exports.validateAmount = (amount) => {
+  // Ensure the input is a number or a string that represents a number
+  const parsedAmount = parseFloat(amount);
+  
+  // Ensure the parsed amount is a positive integer
+  if (!Number.isInteger(parsedAmount) || parsedAmount <= 0) {
+    return false;
+  }
+
+  return true;
+};
