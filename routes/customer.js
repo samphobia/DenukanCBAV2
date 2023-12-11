@@ -154,7 +154,7 @@ const router = express.Router()
  *        description: There was an error creating the news user
  *
  */
-router.post("/createcustomer", createCustomer);
+router.post("/createcustomer", authenticateUser, createCustomer);
 
  /**
   * @swagger
@@ -177,6 +177,6 @@ router.post("/createcustomer", createCustomer);
 router.get("/getallcustomers", authenticateUser, getAllCustomers);
 
 
-router.patch("/updatecustomer/:customerId", updateCustomer);
+router.patch("/updatecustomer/:customerId", authenticateUser,  updateCustomer);
 
 module.exports = router;
