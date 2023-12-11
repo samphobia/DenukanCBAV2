@@ -1,5 +1,6 @@
 const express = require("express");
-const { createCustomer, getAllCustomers, updateCustomer } = require('../controllers/customer')
+const { createCustomer, getAllCustomers, updateCustomer } = require('../controllers/customer');
+const { authorizeUser, authenticateUser } = require("../middleware/auth");
 
 const router = express.Router()
 
@@ -153,7 +154,7 @@ const router = express.Router()
  *        description: There was an error creating the news user
  *
  */
-router.post("/createcustomer", createCustomer);
+router.post("/createcustomer", authenticateUser, createCustomer);
 
  /**
   * @swagger
@@ -173,9 +174,9 @@ router.post("/createcustomer", createCustomer);
   *        description: There was an error loading the User
   * 
   */
-router.get("/getallcustomers", getAllCustomers);
+router.get("/getallcustomers", authenticateUser, getAllCustomers);
 
 
-router.patch("/updatecustomer/:customerId", updateCustomer);
+router.patch("/updatecustomer/:customerId", authenticateUser,  updateCustomer);
 
 module.exports = router;

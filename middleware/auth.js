@@ -99,3 +99,45 @@ exports.authorizeRoute = async (req, res, next) => {
   }
 };
 
+exports.authenticateUser = async (req, res, next) => {
+  // Get the token from the request headers or cookies
+  let token;
+     if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+     ) {
+        //set token from header
+        token = req.headers.authorization.split(" ")[1];
+  
+        //set token from cookie
+     }
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Not Authorized to access this route",
+    });
+  }
+  try {
+
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Replace 'your-secret-key' with your actual secret key
+
+    req.user = decodedToken; // Set the user information in the request object
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Authentication failed. Invalid token.' });
+  }
+};
+
+// Authorization Middleware (RBAC)
+exports.authorizeUser = (roles) => {
+  return (req, res, next) => {
+    const { role } = req.user;
+
+    if (!roles.includes(role)) {
+      return res.status(403).json({ message: 'Authorization failed. User does not have the required role.' });
+    }
+
+    next();
+  };
+};
+

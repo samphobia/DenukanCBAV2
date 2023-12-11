@@ -5,17 +5,19 @@ const {
   getAllTransactionsByAccountNumber,
   transfer,
 } = require("../controllers/transactions");
+const { authenticateUser } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/deposit", deposit);
+router.post("/deposit", authenticateUser, deposit);
 
-router.post("/withdrawal", withdrawal);
+router.post("/withdrawal", authenticateUser, withdrawal);
 
-router.post("/transfer", transfer);
+router.post("/transfer", authenticateUser, transfer);
 
 router.get(
   "/gettransbynumber/:accountNumber",
+  authenticateUser,
   getAllTransactionsByAccountNumber
 );
 

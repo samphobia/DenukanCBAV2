@@ -1,5 +1,6 @@
 const Account = require("../models/Account"); // Adjust the path accordingly
 const Customer = require("../models/Customer"); // Adjust the path accordingly
+const Transactions = require("../models/Transaction"); // Adjust the path accordingly
 const Sequelize = require('sequelize');
 const {sequelize} = require('../config/database');
 
@@ -98,3 +99,56 @@ exports.getAccountByType = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+exports.getAccountDetails = async (req, res) => {
+  try {
+    const { accountNumber } = req.params;
+
+    // Find the account and its associated customer
+    const accountDetails = await Account.findOne({
+      where: { accountNumber },
+      include: [{ model: Customer }],
+    });
+
+    if (!accountDetails) {
+      return res.status(404).json({
+        message: "Account not found",
+      });
+    }
+
+    // Find all transactions for the account
+    const transactions = await Transactions.findAll({
+      where: { account_id: accountDetails.id },
+      order: [['transaction_date', 'DESC']], // Optional: Order transactions by date
+    });
+
+    // Extract relevant information for each transaction
+    const formattedTransactions = transactions.map((transaction) => ({
+      transaction_id: transaction.transaction_id,
+      account_id: transaction.account_id,
+      transaction_type: transaction.transaction_type,
+      amount: transaction.amount,
+      transaction_date: transaction.transaction_date,
+      // ... include other attributes as needed
+    }));
+
+    // Extract relevant information for the account details response
+    const formattedAccountDetails = {
+      account_id: accountDetails.id,
+      account_number: accountDetails.accountNumber,
+      customer_id: accountDetails.customer_id,
+      customerName: `${accountDetails.Customer.title} ${accountDetails.Customer.firstName} ${accountDetails.Customer.lastName}`,
+      account_type: accountDetails.accountType,
+      balance: accountDetails.balance,
+      created_at: accountDetails.createdAt,
+      transactions: formattedTransactions,
+      // ... include other attributes as needed
+    };
+
+    res.status(200).json(formattedAccountDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
