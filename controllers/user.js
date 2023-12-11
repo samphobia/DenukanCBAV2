@@ -150,7 +150,8 @@ exports.userLogin = async (req, res, next) => {
     const token = jwt.sign(
       {
         userId: user.id,
-        merchantId: merchant.id,
+        email: user.email, 
+        role: user.role
         // You can add more claims if needed
       },
       process.env.JWT_SECRET, // Adjust this to your secret
@@ -174,7 +175,7 @@ exports.userLogin = async (req, res, next) => {
   } catch (err) {
     res.status(400).json({
       status: '01',
-      message: "Logi failed"
+      message: "Login failed"
     });
   }
 };

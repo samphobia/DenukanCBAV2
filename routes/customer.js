@@ -1,5 +1,6 @@
 const express = require("express");
-const { createCustomer, getAllCustomers, updateCustomer } = require('../controllers/customer')
+const { createCustomer, getAllCustomers, updateCustomer } = require('../controllers/customer');
+const { authorizeUser, authenticateUser } = require("../middleware/auth");
 
 const router = express.Router()
 
@@ -173,7 +174,7 @@ router.post("/createcustomer", createCustomer);
   *        description: There was an error loading the User
   * 
   */
-router.get("/getallcustomers", getAllCustomers);
+router.get("/getallcustomers", authenticateUser, getAllCustomers);
 
 
 router.patch("/updatecustomer/:customerId", updateCustomer);
